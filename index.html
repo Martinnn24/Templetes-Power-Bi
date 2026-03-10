@@ -476,31 +476,360 @@ function applyToDOM(){
   renderBarChart();renderLineChart();renderWaterfall();renderGauge();renderMatrix();
 }
 
-function wt(v){return({100:'thin',200:'extralight',300:'light',400:'normal',500:'medium',600:'semibold',700:'bold',800:'extrabold',900:'black'})[v]||'normal';}
 function generateJSON(){
-  const c=S.colors,f=S.font;
+  const c=S.colors, f=S.font;
+  // Solo propiedades top-level documentadas y verificadas por Microsoft
   return {
-    name:"Custom Power BI Theme",
-    dataColors:[c.c1,c.c2,c.c3,c.c4,c.c5,c.c3,c.c4,c.c5],
-    good:c.c4,bad:c.c2,neutral:c.c5,maximum:c.c1,center:c.c3,minimum:c.c2,null:"#808080",
-    background:c.bg,foreground:c.text,tableAccent:c.c1,
-    visualStyles:{
-      "*":{"*":{background:[{color:{solid:{color:c.panel}}}],border:[{show:false}],title:[{fontColor:{solid:{color:c.text}},background:{solid:{color:c.panel}},fontSize:f.titleSize,fontFamily:f.family,fontWeight:wt(f.titleWeight),bold:f.titleWeight>=700,italic:false}],labels:[{color:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family,fontWeight:wt(f.labelWeight)}],dataLabels:[{color:{solid:{color:c.text}},fontSize:f.bodySize,fontFamily:f.family}]}},
-      barChart:{"*":{dataPoint:[{fill:{solid:{color:c.c1}}}],categoryAxis:[{labelColor:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family}],valueAxis:[{labelColor:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family,gridlineColor:{solid:{color:c.border}}}]}},
-      columnChart:{"*":{dataPoint:[{fill:{solid:{color:c.c1}}}],categoryAxis:[{labelColor:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family}],valueAxis:[{labelColor:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family,gridlineColor:{solid:{color:c.border}}}]}},
-      lineChart:{"*":{dataPoint:[{strokeColor:{solid:{color:c.c1}},strokeWidth:2}],categoryAxis:[{labelColor:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family}],valueAxis:[{labelColor:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family,gridlineColor:{solid:{color:c.border}}}]}},
-      waterfallChart:{"*":{sentimentColors:[{increaseFill:{solid:{color:c.c4}},decreaseFill:{solid:{color:c.c2}},totalFill:{solid:{color:c.c1}}}]}},
-      gauge:{"*":{dataLabels:[{color:{solid:{color:c.text}},fontSize:f.bodySize,fontFamily:f.family}],target:[{color:{solid:{color:c.c5}}}],fillAngle:[{fill:{solid:{color:c.c1}}}]}},
-      tableEx:{"*":{header:[{fontColor:{solid:{color:c.text}},backColor:{solid:{color:c.bg}},fontSize:f.labelSize,fontFamily:f.family,fontWeight:wt(f.labelWeight),bold:f.labelWeight>=700}],values:[{fontColorPrimary:{solid:{color:c.text}},backColorPrimary:{solid:{color:c.panel}},fontColorSecondary:{solid:{color:c.text}},backColorSecondary:{solid:{color:c.bg}},fontSize:f.bodySize,fontFamily:f.family}],grid:[{gridColor:{solid:{color:c.border}},outlineColor:{solid:{color:c.border}}}]}},
-      matrix:{"*":{header:[{fontColor:{solid:{color:c.text}},backColor:{solid:{color:c.bg}},fontSize:f.labelSize,fontFamily:f.family,fontWeight:wt(f.labelWeight),bold:f.labelWeight>=700}],values:[{fontColorPrimary:{solid:{color:c.text}},backColorPrimary:{solid:{color:c.panel}},fontSize:f.bodySize,fontFamily:f.family}],grid:[{gridColor:{solid:{color:c.border}}}]}},
-      card:{"*":{labels:[{color:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family}],value:[{fontColor:{solid:{color:c.text}},fontSize:f.titleSize,fontFamily:f.family,fontWeight:wt(f.titleWeight),bold:f.titleWeight>=700}]}},
-      slicer:{"*":{selection:[{fontColor:{solid:{color:c.text}},fontSize:f.bodySize,fontFamily:f.family}]}},
-      donutChart:{"*":{dataPoint:[{fill:{solid:{color:c.c1}}},{fill:{solid:{color:c.c2}}},{fill:{solid:{color:c.c3}}},{fill:{solid:{color:c.c4}}},{fill:{solid:{color:c.c5}}}]}},
-      areaChart:{"*":{dataPoint:[{fill:{solid:{color:c.c1}}}]}},
-      pieChart:{"*":{dataPoint:[{fill:{solid:{color:c.c1}}},{fill:{solid:{color:c.c2}}},{fill:{solid:{color:c.c3}}}]}}
+    name: "Custom Power BI Theme",
+    dataColors: [c.c1, c.c2, c.c3, c.c4, c.c5, c.c3, c.c4, c.c5],
+    background:  c.bg,
+    foreground:  c.text,
+    tableAccent: c.c1,
+    good:    c.c4,
+    bad:     c.c2,
+    neutral: c.c5,
+    maximum: c.c1,
+    minimum: c.c2,
+    center:  c.c3,
+    visualStyles: {
+      // ── Globales ──────────────────────────────────────────
+      "*": {
+        "*": {
+          background: [{ color: { solid: { color: c.panel } } }],
+          title: [{
+            show:            true,
+            fontColor:       { solid: { color: c.text } },
+            background:      { solid: { color: c.panel } },
+            fontSize:        f.titleSize,
+            fontFamily:      f.family,
+            bold:            f.titleWeight >= 700,
+            italic:          false,
+            underline:       false
+          }],
+          general: [{
+            responsive:      true,
+            keepLayerOrder:  true
+          }]
+        }
+      },
+
+      // ── Bar / Column ──────────────────────────────────────
+      barChart: {
+        "*": {
+          dataPoint:    [{ fill: { solid: { color: c.c1 } } }],
+          categoryAxis: [{
+            labelColor:  { solid: { color: c.muted } },
+            fontSize:    f.labelSize,
+            fontFamily:  f.family
+          }],
+          valueAxis: [{
+            labelColor:  { solid: { color: c.muted } },
+            fontSize:    f.labelSize,
+            fontFamily:  f.family
+          }]
+        }
+      },
+      columnChart: {
+        "*": {
+          dataPoint:    [{ fill: { solid: { color: c.c1 } } }],
+          categoryAxis: [{
+            labelColor:  { solid: { color: c.muted } },
+            fontSize:    f.labelSize,
+            fontFamily:  f.family
+          }],
+          valueAxis: [{
+            labelColor:  { solid: { color: c.muted } },
+            fontSize:    f.labelSize,
+            fontFamily:  f.family
+          }]
+        }
+      },
+
+      // ── Line ─────────────────────────────────────────────
+      lineChart: {
+        "*": {
+          dataPoint:    [{ fill: { solid: { color: c.c1 } } }],
+          categoryAxis: [{
+            labelColor:  { solid: { color: c.muted } },
+            fontSize:    f.labelSize,
+            fontFamily:  f.family
+          }],
+          valueAxis: [{
+            labelColor:  { solid: { color: c.muted } },
+            fontSize:    f.labelSize,
+            fontFamily:  f.family
+          }]
+        }
+      },
+
+      // ── Area ─────────────────────────────────────────────
+      areaChart: {
+        "*": {
+          dataPoint: [{ fill: { solid: { color: c.c1 } } }]
+        }
+      },
+
+      // ── Pie / Donut ───────────────────────────────────────
+      pieChart: {
+        "*": {
+          dataPoint: [
+            { fill: { solid: { color: c.c1 } } },
+            { fill: { solid: { color: c.c2 } } },
+            { fill: { solid: { color: c.c3 } } },
+            { fill: { solid: { color: c.c4 } } },
+            { fill: { solid: { color: c.c5 } } }
+          ]
+        }
+      },
+      donutChart: {
+        "*": {
+          dataPoint: [
+            { fill: { solid: { color: c.c1 } } },
+            { fill: { solid: { color: c.c2 } } },
+            { fill: { solid: { color: c.c3 } } },
+            { fill: { solid: { color: c.c4 } } },
+            { fill: { solid: { color: c.c5 } } }
+          ]
+        }
+      },
+
+      // ── Scatter ───────────────────────────────────────────
+      scatterChart: {
+        "*": {
+          dataPoint: [{ fill: { solid: { color: c.c1 } } }]
+        }
+      },
+
+      // ── Waterfall ─────────────────────────────────────────
+      waterfallChart: {
+        "*": {
+          dataPoint: [{ fill: { solid: { color: c.c1 } } }],
+          sentimentColors: [{
+            increaseFill: { solid: { color: c.c4 } },
+            decreaseFill: { solid: { color: c.c2 } },
+            totalFill:    { solid: { color: c.c1 } }
+          }]
+        }
+      },
+
+      // ── Gauge ─────────────────────────────────────────────
+      gauge: {
+        "*": {
+          dataPoint: [{ fill: { solid: { color: c.c1 } } }],
+          target:    [{ color: { solid: { color: c.c5 } } }],
+          dataLabels:[{
+            color:     { solid: { color: c.text } },
+            fontSize:  f.bodySize,
+            fontFamily:f.family
+          }]
+        }
+      },
+
+      // ── KPI ───────────────────────────────────────────────
+      kpi: {
+        "*": {
+          indicator: [{
+            kpiIndicatorFontColor: { solid: { color: c.c4 } }
+          }],
+          labels: [{
+            color:     { solid: { color: c.muted } },
+            fontSize:  f.labelSize,
+            fontFamily:f.family
+          }]
+        }
+      },
+
+      // ── Card ─────────────────────────────────────────────
+      card: {
+        "*": {
+          labels: [{
+            color:     { solid: { color: c.muted } },
+            fontSize:  f.labelSize,
+            fontFamily:f.family
+          }],
+          value: [{
+            fontColor: { solid: { color: c.text } },
+            fontSize:  f.titleSize,
+            fontFamily:f.family,
+            bold:      f.titleWeight >= 700
+          }]
+        }
+      },
+
+      // ── Multi-row card ────────────────────────────────────
+      multiRowCard: {
+        "*": {
+          dataLabels: [{
+            color:     { solid: { color: c.text } },
+            fontSize:  f.bodySize,
+            fontFamily:f.family
+          }],
+          categoryLabels: [{
+            color:     { solid: { color: c.muted } },
+            fontSize:  f.labelSize,
+            fontFamily:f.family
+          }],
+          cardTitle: [{
+            color:     { solid: { color: c.muted } },
+            fontSize:  f.labelSize,
+            fontFamily:f.family
+          }]
+        }
+      },
+
+      // ── Table ─────────────────────────────────────────────
+      tableEx: {
+        "*": {
+          header: [{
+            fontColor:  { solid: { color: c.text } },
+            backColor:  { solid: { color: c.bg } },
+            fontSize:   f.labelSize,
+            fontFamily: f.family,
+            bold:       f.labelWeight >= 700
+          }],
+          values: [{
+            fontColorPrimary:   { solid: { color: c.text } },
+            backColorPrimary:   { solid: { color: c.panel } },
+            fontColorSecondary: { solid: { color: c.text } },
+            backColorSecondary: { solid: { color: c.bg } },
+            fontSize:   f.bodySize,
+            fontFamily: f.family
+          }],
+          grid: [{
+            gridVertical:         false,
+            gridHorizontal:       true,
+            gridHorizontalColor:  { solid: { color: c.border } },
+            rowPadding:           3,
+            outlineColor:         { solid: { color: c.border } },
+            outlineWeight:        1
+          }],
+          total: [{
+            fontColor:  { solid: { color: c.text } },
+            backColor:  { solid: { color: c.bg } },
+            fontSize:   f.labelSize,
+            fontFamily: f.family,
+            bold:       true
+          }]
+        }
+      },
+
+      // ── Matrix ────────────────────────────────────────────
+      matrix: {
+        "*": {
+          header: [{
+            fontColor:  { solid: { color: c.text } },
+            backColor:  { solid: { color: c.bg } },
+            fontSize:   f.labelSize,
+            fontFamily: f.family,
+            bold:       f.labelWeight >= 700
+          }],
+          rowHeaders: [{
+            fontColor:  { solid: { color: c.text } },
+            backColor:  { solid: { color: c.panel } },
+            fontSize:   f.bodySize,
+            fontFamily: f.family
+          }],
+          columnHeaders: [{
+            fontColor:  { solid: { color: c.text } },
+            backColor:  { solid: { color: c.bg } },
+            fontSize:   f.labelSize,
+            fontFamily: f.family,
+            bold:       f.labelWeight >= 700
+          }],
+          values: [{
+            fontColorPrimary:   { solid: { color: c.text } },
+            backColorPrimary:   { solid: { color: c.panel } },
+            fontColorSecondary: { solid: { color: c.text } },
+            backColorSecondary: { solid: { color: c.bg } },
+            fontSize:   f.bodySize,
+            fontFamily: f.family
+          }],
+          grid: [{
+            gridHorizontalColor: { solid: { color: c.border } },
+            gridVerticalColor:   { solid: { color: c.border } },
+            outlineColor:        { solid: { color: c.border } },
+            rowPadding:          3
+          }],
+          subTotals: [{
+            fontColor:  { solid: { color: c.text } },
+            backColor:  { solid: { color: c.bg } },
+            fontSize:   f.labelSize,
+            fontFamily: f.family,
+            bold:       true
+          }]
+        }
+      },
+
+      // ── Slicer ────────────────────────────────────────────
+      slicer: {
+        "*": {
+          selection: [{
+            selectAllCheckboxEnabled: true,
+            singleSelect:             false
+          }],
+          data: [{
+            fontColor:   { solid: { color: c.text } },
+            fontSize:    f.bodySize,
+            fontFamily:  f.family
+          }],
+          header: [{
+            fontColor:   { solid: { color: c.muted } },
+            background:  { solid: { color: c.panel } },
+            fontSize:    f.labelSize,
+            fontFamily:  f.family,
+            bold:        false
+          }]
+        }
+      },
+
+      // ── Map / Filled map ──────────────────────────────────
+      map: {
+        "*": {
+          dataPoint: [{ fill: { solid: { color: c.c1 } } }]
+        }
+      },
+      filledMap: {
+        "*": {
+          dataPoint: [{ fill: { solid: { color: c.c1 } } }]
+        }
+      },
+
+      // ── TreeMap ───────────────────────────────────────────
+      treemap: {
+        "*": {
+          dataPoint: [{ fill: { solid: { color: c.c1 } } }],
+          labels: [{
+            color:     { solid: { color: "#FFFFFF" } },
+            fontSize:  f.bodySize,
+            fontFamily:f.family
+          }]
+        }
+      }
     },
-    page:{background:{color:{solid:{color:c.bg}},transparency:0},outspace:{color:{solid:{color:c.bg}}}},
-    textClasses:{callout:{fontFace:f.family,fontSize:f.titleSize*2,fontWeight:wt(f.titleWeight),color:c.c1},title:{fontFace:f.family,fontSize:f.titleSize,fontWeight:wt(f.titleWeight),color:c.text},header:{fontFace:f.family,fontSize:f.bodySize+2,fontWeight:wt(f.labelWeight),color:c.text},label:{fontFace:f.family,fontSize:f.labelSize,fontWeight:wt(f.bodyWeight),color:c.muted}}
+
+    // ── Text classes ──────────────────────────────────────────
+    textClasses: {
+      callout: {
+        fontFace:   f.family,
+        color:      c.c1,
+        fontSize:   f.titleSize + 12
+      },
+      title: {
+        fontFace:   f.family,
+        color:      c.text,
+        fontSize:   f.titleSize
+      },
+      header: {
+        fontFace:   f.family,
+        color:      c.text,
+        fontSize:   f.bodySize + 1
+      },
+      label: {
+        fontFace:   f.family,
+        color:      c.muted,
+        fontSize:   f.labelSize
+      }
+    }
   };
 }
 
