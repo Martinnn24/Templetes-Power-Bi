@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Power BI Theme Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --c1:#2563EB;--c2:#E11D48;--c3:#7C3AED;--c4:#059669;--c5:#D97706;
+  --bg:#F1F5F9;--panel:#FFFFFF;--text:#0F172A;--muted:#64748B;--border:#E2E8F0;
+  --font-family:'Segoe UI';--title-size:16px;--body-size:11px;--label-size:10px;
+  --title-weight:700;--body-weight:400;--label-weight:600;
+}
+body{font-family:'DM Sans',sans-serif;background:#0A0F1E;color:#F8FAFC;min-height:100vh;overflow-x:hidden;}
+
+/* HEADER */
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 36px;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(10,15,30,0.97);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,#2563EB,#7C3AED);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;}
+.logo-text{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;}
+.logo-sub{font-size:11px;color:#475569;margin-top:1px;}
+.header-actions{display:flex;gap:8px;align-items:center;}
+.btn-export{background:linear-gradient(135deg,#2563EB,#7C3AED);border:none;color:white;padding:9px 20px;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:500;font-size:13px;cursor:pointer;transition:opacity .2s,transform .1s;}
+.btn-export:hover{opacity:.85;transform:translateY(-1px);}
+.btn-secondary{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#CBD5E1;padding:8px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:background .2s;}
+.btn-secondary:hover{background:rgba(255,255,255,0.1);}
+
+/* LAYOUT */
+.app-layout{display:grid;grid-template-columns:310px 1fr;min-height:calc(100vh - 63px);}
+
+/* SIDEBAR */
+.sidebar{background:#0D1323;border-right:1px solid rgba(255,255,255,0.07);overflow-y:auto;padding-bottom:40px;scrollbar-width:thin;scrollbar-color:#1E293B transparent;}
+.section-header{padding:18px 18px 7px;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#475569;}
+.color-group{padding:4px 18px 12px;}
+.color-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.color-label{font-size:11px;color:#94A3B8;width:115px;flex-shrink:0;}
+.color-input-wrap{display:flex;align-items:center;gap:7px;flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:7px;padding:5px 8px;transition:border-color .2s;}
+.color-input-wrap:focus-within{border-color:rgba(37,99,235,.5);}
+.color-swatch input[type="color"]{width:20px;height:20px;border:none;border-radius:4px;cursor:pointer;padding:0;background:none;}
+.hex-input{background:none;border:none;color:#E2E8F0;font-size:11px;font-family:'Courier New',monospace;width:100%;outline:none;letter-spacing:.04em;}
+.divider{height:1px;background:rgba(255,255,255,0.06);margin:2px 0;}
+
+/* Typo */
+.typo-group{padding:4px 18px 12px;}
+.typo-row{margin-bottom:10px;}
+.typo-label{font-size:10px;color:#64748B;margin-bottom:4px;display:block;}
+.typo-select,.typo-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#E2E8F0;border-radius:7px;padding:7px 9px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;appearance:none;}
+.typo-select:focus,.typo-input:focus{border-color:rgba(37,99,235,.5);}
+.typo-select option{background:#0D1323;}
+.typo-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+
+/* Presets */
+.presets-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:4px 18px 12px;}
+.preset-card{border:2px solid transparent;border-radius:9px;padding:9px;cursor:pointer;transition:border-color .2s,transform .15s;background:rgba(255,255,255,0.03);}
+.preset-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.15);}
+.preset-card.active{border-color:#2563EB;}
+.preset-swatches{display:flex;gap:3px;margin-bottom:5px;}
+.preset-swatch{height:12px;border-radius:3px;flex:1;}
+.preset-name{font-size:10px;color:#94A3B8;}
+
+/* PREVIEW */
+.preview-area{background:#111827;padding:28px;overflow-y:auto;}
+.preview-label{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#475569;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.preview-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.06);}
+
+/* MOCK DASHBOARD */
+.mock-dashboard{background:var(--bg);border-radius:12px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.45);transition:background .3s;}
+
+/* PBI Top bar */
+.pbi-topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.pbi-report-title{font-size:var(--title-size);font-family:var(--font-family),sans-serif;font-weight:var(--title-weight);color:var(--text);transition:all .3s;}
+.pbi-report-sub{font-size:var(--label-size);font-family:var(--font-family),sans-serif;color:var(--muted);margin-top:2px;transition:all .3s;}
+.pbi-filter-badge{background:var(--c1);color:white;font-size:9px;font-family:var(--font-family),sans-serif;padding:3px 9px;border-radius:3px;font-weight:600;}
+
+/* Slicer */
+.pbi-slicer{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+.pbi-slicer-label{font-size:9px;color:var(--muted);font-family:var(--font-family),sans-serif;font-weight:var(--label-weight);text-transform:uppercase;letter-spacing:.08em;margin-right:4px;transition:all .3s;}
+.slicer-pill{font-size:10px;padding:3px 10px;border-radius:2px;font-family:var(--font-family),sans-serif;font-weight:var(--body-weight);border:1px solid;cursor:default;transition:all .3s;}
+.slicer-on{background:var(--c1);color:white;border-color:var(--c1);}
+.slicer-off{background:transparent;color:var(--muted);border-color:var(--border);}
+
+/* KPIs */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
+.kpi-card{background:var(--panel);border-radius:4px;padding:12px 14px;border:1px solid var(--border);transition:background .3s,border-color .3s;position:relative;overflow:hidden;}
+.kpi-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--kpi-accent,var(--c1));}
+.kpi-label{font-size:var(--label-size);font-family:var(--font-family),sans-serif;font-weight:var(--label-weight);color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;transition:all .3s;}
+.kpi-value{font-size:calc(var(--title-size) * 1.15);font-family:var(--font-family),sans-serif;font-weight:var(--title-weight);color:var(--text);line-height:1.1;transition:all .3s;}
+.kpi-trend{font-size:9px;margin-top:5px;font-family:var(--font-family),sans-serif;transition:all .3s;}
+.trend-up{color:#059669;}.trend-dn{color:#E11D48;}
+
+/* Charts layout */
+.charts-main{display:grid;grid-template-columns:1.1fr 1fr;gap:10px;margin-bottom:12px;}
+.charts-bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.pbi-card{background:var(--panel);border-radius:4px;padding:13px 14px;border:1px solid var(--border);transition:background .3s,border-color .3s;}
+.pbi-card-title{font-size:var(--body-size);font-family:var(--font-family),sans-serif;font-weight:var(--title-weight);color:var(--text);margin-bottom:1px;transition:all .3s;}
+.pbi-card-sub{font-size:9px;font-family:var(--font-family),sans-serif;color:var(--muted);margin-bottom:10px;transition:all .3s;}
+
+/* 1. CLUSTERED BAR */
+.pbi-bar-chart{display:flex;flex-direction:column;gap:4px;}
+.pbi-bar-group{display:flex;align-items:center;gap:6px;}
+.pbi-bar-cat{font-size:9px;color:var(--muted);font-family:var(--font-family),sans-serif;width:26px;text-align:right;flex-shrink:0;transition:all .3s;}
+.pbi-bar-track{flex:1;display:flex;flex-direction:column;gap:2px;}
+.pbi-bar-row{display:flex;align-items:center;gap:4px;}
+.pbi-bar{height:9px;border-radius:0;transition:background .3s,width .5s ease;min-width:2px;}
+.pbi-bar-val{font-size:8px;color:var(--muted);font-family:var(--font-family),sans-serif;white-space:nowrap;transition:all .3s;}
+.pbi-chart-legend{display:flex;gap:10px;margin-top:6px;}
+.pbi-legend-item{display:flex;align-items:center;gap:4px;}
+.pbi-legend-lbl{font-size:9px;color:var(--muted);font-family:var(--font-family),sans-serif;transition:all .3s;}
+
+/* 2. LINE CHART */
+.pbi-axis-labels{display:flex;justify-content:space-between;padding:0 2px;margin-top:2px;}
+.pbi-axis-lbl{font-size:8px;color:var(--muted);font-family:var(--font-family),sans-serif;transition:all .3s;}
+
+/* 3. WATERFALL */
+.wf-wrap{display:flex;align-items:flex-end;gap:4px;height:88px;}
+
+/* 4. GAUGE */
+.pbi-gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:2px 0;}
+.gauge-value{font-size:calc(var(--title-size)*1.1);font-family:var(--font-family),sans-serif;font-weight:var(--title-weight);color:var(--text);text-align:center;margin-top:-6px;transition:all .3s;}
+.gauge-sub{font-size:9px;color:var(--muted);font-family:var(--font-family),sans-serif;text-align:center;transition:all .3s;}
+.gauge-minmax{display:flex;justify-content:space-between;width:130px;margin-top:1px;}
+.gauge-minmax span{font-size:8px;color:var(--muted);font-family:var(--font-family),sans-serif;transition:all .3s;}
+
+/* 5. MATRIX */
+.pbi-matrix{width:100%;border-collapse:collapse;}
+.pbi-matrix th{font-size:9px;font-family:var(--font-family),sans-serif;font-weight:var(--label-weight);color:var(--muted);padding:5px 6px;border-bottom:2px solid var(--c1);text-align:left;transition:all .3s;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
+.pbi-matrix td{padding:5px 6px;font-size:9px;font-family:var(--font-family),sans-serif;font-weight:var(--body-weight);color:var(--text);border-bottom:1px solid var(--border);transition:all .3s;}
+.pbi-matrix tr:last-child td{border-bottom:none;font-weight:700;background:rgba(0,0,0,.03);}
+.heatbar{height:6px;border-radius:1px;display:inline-block;vertical-align:middle;margin-left:3px;transition:width .4s,background .3s;}
+.cell-pos{color:#059669!important;font-weight:600!important;}
+.cell-neg{color:#E11D48!important;font-weight:600!important;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.modal-overlay.open{display:flex;}
+.modal{background:#0D1323;border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:26px;width:560px;max-height:80vh;display:flex;flex-direction:column;}
+.modal-title{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+.modal-close{background:none;border:none;color:#64748B;font-size:20px;cursor:pointer;padding:2px 6px;border-radius:5px;transition:background .2s;}
+.modal-close:hover{background:rgba(255,255,255,.08);}
+.json-preview{flex:1;overflow-y:auto;background:#060A14;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:14px;font-family:'Courier New',monospace;font-size:11px;color:#94A3B8;line-height:1.7;white-space:pre;scrollbar-width:thin;}
+.modal-actions{display:flex;gap:8px;margin-top:14px;justify-content:flex-end;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">PB</div>
+    <div>
+      <div class="logo-text">Theme Studio</div>
+      <div class="logo-sub">Power BI Theme Creator</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-secondary" onclick="showJSON()">👁 Preview JSON</button>
+    <button class="btn-export" onclick="downloadJSON()">⬇ Export .json</button>
+  </div>
+</header>
+
+<div class="app-layout">
+<aside class="sidebar">
+  <div class="section-header">🎨 Presets</div>
+  <div class="presets-grid" id="presetsGrid"></div>
+  <div class="divider"></div>
+  <div class="section-header">Colors</div>
+  <div class="color-group" id="colorGroup"></div>
+  <div class="divider"></div>
+  <div class="section-header">Typography</div>
+  <div class="typo-group">
+    <div class="typo-row">
+      <label class="typo-label">Font Family</label>
+      <select class="typo-select" id="fontFamily" onchange="updateTypo()">
+        <option value="Segoe UI">Segoe UI (Default PBI)</option>
+        <option value="DIN">DIN</option><option value="Calibri">Calibri</option>
+        <option value="Georgia">Georgia</option><option value="Arial">Arial</option>
+        <option value="Trebuchet MS">Trebuchet MS</option><option value="Verdana">Verdana</option>
+        <option value="Times New Roman">Times New Roman</option>
+      </select>
+    </div>
+    <div class="typo-grid">
+      <div class="typo-row"><label class="typo-label">Title size (px)</label><input class="typo-input" type="number" id="titleSize" value="16" min="10" max="32" oninput="updateTypo()"></div>
+      <div class="typo-row"><label class="typo-label">Title weight</label><select class="typo-select" id="titleWeight" onchange="updateTypo()"><option value="400">Regular</option><option value="600">Semibold</option><option value="700" selected>Bold</option><option value="800">Extrabold</option></select></div>
+      <div class="typo-row"><label class="typo-label">Body size (px)</label><input class="typo-input" type="number" id="bodySize" value="11" min="8" max="20" oninput="updateTypo()"></div>
+      <div class="typo-row"><label class="typo-label">Body weight</label><select class="typo-select" id="bodyWeight" onchange="updateTypo()"><option value="300">Light</option><option value="400" selected>Regular</option><option value="500">Medium</option></select></div>
+      <div class="typo-row"><label class="typo-label">Label size (px)</label><input class="typo-input" type="number" id="labelSize" value="10" min="8" max="16" oninput="updateTypo()"></div>
+      <div class="typo-row"><label class="typo-label">Label weight</label><select class="typo-select" id="labelWeight" onchange="updateTypo()"><option value="400">Regular</option><option value="600" selected>Semibold</option><option value="700">Bold</option></select></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="section-header">Canvas</div>
+  <div class="typo-group">
+    <div class="typo-row">
+      <label class="typo-label">Background style</label>
+      <select class="typo-select" id="bgStyle" onchange="updateBgStyle()">
+        <option value="light">Light</option><option value="dark">Dark</option><option value="custom">Custom</option>
+      </select>
+    </div>
+    <div id="bgCustomRow" class="color-row" style="display:none">
+      <span class="color-label">Background</span>
+      <div class="color-input-wrap">
+        <label class="color-swatch"><input type="color" value="#F1F5F9" id="bgColorPicker" oninput="updateBgColor(this.value)"></label>
+        <input class="hex-input" value="#F1F5F9" id="bgHexInput" oninput="updateBgColor(this.value)">
+      </div>
+    </div>
+  </div>
+</aside>
+
+<main class="preview-area">
+  <div class="preview-label">Live Preview — Power BI Mockup</div>
+  <div class="mock-dashboard" id="mockDashboard">
+
+    <div class="pbi-topbar">
+      <div>
+        <div class="pbi-report-title">Sales Performance Report</div>
+        <div class="pbi-report-sub">Fiscal Year 2024 · All Regions</div>
+      </div>
+      <div class="pbi-filter-badge">Filtered: FY 2024</div>
+    </div>
+
+    <div class="pbi-slicer">
+      <span class="pbi-slicer-label">Region</span>
+      <div class="slicer-pill slicer-on">All</div>
+      <div class="slicer-pill slicer-off">North</div>
+      <div class="slicer-pill slicer-off">South</div>
+      <div class="slicer-pill slicer-off">East</div>
+      <div class="slicer-pill slicer-off">West</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-card" style="--kpi-accent:var(--c1)"><div class="kpi-label">Total Revenue</div><div class="kpi-value">$2.4M</div><div class="kpi-trend trend-up">▲ 8.3%</div></div>
+      <div class="kpi-card" style="--kpi-accent:var(--c2)"><div class="kpi-label">Total Costs</div><div class="kpi-value">$1.1M</div><div class="kpi-trend trend-dn">▼ 2.1%</div></div>
+      <div class="kpi-card" style="--kpi-accent:var(--c4)"><div class="kpi-label">Net Profit</div><div class="kpi-value">$1.3M</div><div class="kpi-trend trend-up">▲ 14.5%</div></div>
+      <div class="kpi-card" style="--kpi-accent:var(--c5)"><div class="kpi-label">Profit Margin</div><div class="kpi-value">54.2%</div><div class="kpi-trend trend-up">▲ 3.1pp</div></div>
+    </div>
+
+    <div class="charts-main">
+      <!-- CLUSTERED BAR CHART -->
+      <div class="pbi-card">
+        <div class="pbi-card-title">Revenue by Product & Region</div>
+        <div class="pbi-card-sub">Clustered Bar Chart · Jan–Jun 2024</div>
+        <div class="pbi-bar-chart" id="barChart"></div>
+        <div class="pbi-chart-legend" id="barLegend"></div>
+      </div>
+      <!-- LINE CHART -->
+      <div class="pbi-card">
+        <div class="pbi-card-title">Monthly Revenue Trend</div>
+        <div class="pbi-card-sub">Line Chart with Markers · 2024</div>
+        <svg id="lineSvg" style="width:100%;height:90px;overflow:visible" viewBox="0 0 260 80" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" id="lgS1" stop-opacity="0.2"/>
+              <stop offset="100%" id="lgS2" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="20" x2="260" y2="20" stroke-width="0.5" id="gl1" stroke-opacity="0.4"/>
+          <line x1="0" y1="40" x2="260" y2="40" stroke-width="0.5" id="gl2" stroke-opacity="0.4"/>
+          <line x1="0" y1="60" x2="260" y2="60" stroke-width="0.5" id="gl3" stroke-opacity="0.4"/>
+          <path id="lineArea" fill="url(#lineGrad)"/>
+          <path id="linePath2" fill="none" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="4,3"/>
+          <path id="linePath" fill="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+          <g id="lineMarkers"></g>
+        </svg>
+        <div class="pbi-axis-labels" id="lineAxisLabels"></div>
+        <div class="pbi-chart-legend" id="lineLegend" style="margin-top:4px"></div>
+      </div>
+    </div>
+
+    <div class="charts-bottom">
+      <!-- WATERFALL -->
+      <div class="pbi-card">
+        <div class="pbi-card-title">P&amp;L Waterfall</div>
+        <div class="pbi-card-sub">Waterfall Chart · Q2 2024</div>
+        <div class="wf-wrap" id="waterfallChart"></div>
+        <div class="pbi-chart-legend" style="margin-top:6px">
+          <div class="pbi-legend-item"><div style="width:8px;height:8px;background:var(--c4)"></div><span class="pbi-legend-lbl">Increase</span></div>
+          <div class="pbi-legend-item"><div style="width:8px;height:8px;background:var(--c2)"></div><span class="pbi-legend-lbl">Decrease</span></div>
+          <div class="pbi-legend-item"><div style="width:8px;height:8px;background:var(--c1)"></div><span class="pbi-legend-lbl">Total</span></div>
+        </div>
+      </div>
+      <!-- GAUGE -->
+      <div class="pbi-card">
+        <div class="pbi-card-title">Target Achievement</div>
+        <div class="pbi-card-sub">Gauge · Revenue vs Target</div>
+        <div class="pbi-gauge-wrap">
+          <svg style="width:130px;height:76px" viewBox="0 0 160 90" id="gaugeSvg">
+            <path d="M20,82 A60,60 0 0,1 140,82" fill="none" stroke-width="14" id="gaugeTrack" stroke-linecap="round"/>
+            <path d="M20,82 A60,60 0 0,1 140,82" fill="none" stroke-width="14" id="gaugeFill" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="47"/>
+            <line id="gaugeTargetLine" stroke-width="2.5" stroke-linecap="round"/>
+            <line id="gaugeNeedle" x1="80" y1="82" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="80" cy="82" r="4" id="gaugeCenter"/>
+          </svg>
+          <div class="gauge-value" id="gaugeVal">78%</div>
+          <div class="gauge-sub">Target: 90% · Max: 100%</div>
+          <div class="gauge-minmax"><span>0%</span><span>100%</span></div>
+        </div>
+      </div>
+      <!-- MATRIX -->
+      <div class="pbi-card">
+        <div class="pbi-card-title">Sales Matrix</div>
+        <div class="pbi-card-sub">Matrix · by Region &amp; Quarter</div>
+        <table class="pbi-matrix">
+          <thead><tr><th>Region</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Var%</th></tr></thead>
+          <tbody id="matrixBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<div class="modal-overlay" id="jsonModal">
+  <div class="modal">
+    <div class="modal-title">Power BI Theme JSON <button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="json-preview" id="jsonPreview"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="copyJSON()">📋 Copy</button>
+      <button class="btn-export" onclick="downloadJSON()">⬇ Download .json</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const S={
+  colors:{c1:'#2563EB',c2:'#E11D48',c3:'#7C3AED',c4:'#059669',c5:'#D97706',bg:'#F1F5F9',panel:'#FFFFFF',text:'#0F172A',muted:'#64748B',border:'#E2E8F0'},
+  font:{family:'Segoe UI',titleSize:16,bodySize:11,labelSize:10,titleWeight:700,bodyWeight:400,labelWeight:600}
+};
+const PRESETS=[
+  {name:'Corporate',c1:'#2563EB',c2:'#E11D48',c3:'#7C3AED',c4:'#059669',c5:'#D97706',bg:'#F1F5F9',panel:'#FFFFFF',text:'#0F172A',muted:'#64748B',border:'#E2E8F0'},
+  {name:'Midnight', c1:'#60A5FA',c2:'#F472B6',c3:'#A78BFA',c4:'#34D399',c5:'#FBBF24',bg:'#1E293B',panel:'#0F172A',text:'#F1F5F9',muted:'#94A3B8',border:'#334155'},
+  {name:'Forest',   c1:'#166534',c2:'#B45309',c3:'#1E40AF',c4:'#7C3AED',c5:'#BE185D',bg:'#F0FDF4',panel:'#FFFFFF',text:'#14532D',muted:'#6B7280',border:'#D1FAE5'},
+  {name:'Sunset',   c1:'#EA580C',c2:'#DB2777',c3:'#9333EA',c4:'#0891B2',c5:'#16A34A',bg:'#FFF7ED',panel:'#FFFFFF',text:'#431407',muted:'#92400E',border:'#FED7AA'},
+  {name:'Ocean',    c1:'#0891B2',c2:'#6366F1',c3:'#10B981',c4:'#F59E0B',c5:'#EF4444',bg:'#F0F9FF',panel:'#FFFFFF',text:'#0C4A6E',muted:'#64748B',border:'#BAE6FD'},
+  {name:'Mono',     c1:'#111827',c2:'#6B7280',c3:'#374151',c4:'#9CA3AF',c5:'#D1D5DB',bg:'#F9FAFB',panel:'#FFFFFF',text:'#111827',muted:'#6B7280',border:'#E5E7EB'},
+];
+const COLOR_DEFS=[
+  {key:'c1',label:'Color 1 (Primary)'},{key:'c2',label:'Color 2 (Secondary)'},
+  {key:'c3',label:'Color 3 (Tertiary)'},{key:'c4',label:'Color 4 (Quaternary)'},
+  {key:'c5',label:'Color 5 (Quinary)'},{key:'text',label:'Text Color'},
+  {key:'muted',label:'Muted / Labels'},{key:'panel',label:'Card Background'},
+  {key:'border',label:'Border / Lines'},
+];
+const BAR_DATA=[{cat:'Jan',v1:420,v2:310},{cat:'Feb',v1:560,v2:380},{cat:'Mar',v1:390,v2:290},{cat:'Apr',v1:620,v2:420},{cat:'May',v1:510,v2:360},{cat:'Jun',v1:480,v2:330}];
+const LINE1=[180,240,210,290,270,320,250,310,340,290,380,360];
+const LINE2=[130,160,150,200,190,220,180,210,230,200,260,250];
+const LMONTHS=['J','F','M','A','M','J','J','A','S','O','N','D'];
+const WF=[{l:'Revenue',v:620,t:'total'},{l:'COGS',v:-180,t:'decrease'},{l:'Op Exp',v:-120,t:'decrease'},{l:'Other',v:40,t:'increase'},{l:'EBIT',v:360,t:'total'}];
+const MATRIX=[{r:'North',q1:420,q2:380,q3:440,va:4.8},{r:'South',q1:310,q2:360,q3:290,va:-6.5},{r:'East',q1:550,q2:590,q3:610,va:10.9},{r:'West',q1:280,q2:310,q3:300,va:7.1},{r:'Total',q1:1560,q2:1640,q3:1640,va:5.1}];
+
+function buildSidebar(){
+  const pg=document.getElementById('presetsGrid');
+  PRESETS.forEach((p,i)=>{
+    const d=document.createElement('div');d.className='preset-card'+(i===0?' active':'');d.id='preset-'+i;
+    d.innerHTML=`<div class="preset-swatches">${['c1','c2','c3','c4','c5'].map(k=>`<div class="preset-swatch" style="background:${p[k]}"></div>`).join('')}</div><div class="preset-name">${p.name}</div>`;
+    d.onclick=()=>applyPreset(p,i);pg.appendChild(d);
+  });
+  const cg=document.getElementById('colorGroup');
+  COLOR_DEFS.forEach(({key,label})=>{
+    const r=document.createElement('div');r.className='color-row';
+    r.innerHTML=`<span class="color-label">${label}</span><div class="color-input-wrap"><label class="color-swatch"><input type="color" value="${S.colors[key]}" id="picker-${key}" oninput="hCC('${key}',this.value)"></label><input class="hex-input" value="${S.colors[key]}" id="hex-${key}" oninput="hHC('${key}',this.value)"></div>`;
+    cg.appendChild(r);
+  });
+}
+function applyPreset(p,idx){
+  document.querySelectorAll('.preset-card').forEach(e=>e.classList.remove('active'));
+  document.getElementById('preset-'+idx).classList.add('active');
+  Object.assign(S.colors,{c1:p.c1,c2:p.c2,c3:p.c3,c4:p.c4,c5:p.c5,bg:p.bg,panel:p.panel,text:p.text,muted:p.muted,border:p.border});
+  document.getElementById('bgStyle').value=isDark(p.bg)?'dark':'light';
+  document.getElementById('bgCustomRow').style.display='none';
+  syncInputs();applyToDOM();
+}
+const isDark=h=>{const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return(r*299+g*587+b*114)/1000<128;};
+function hCC(k,v){S.colors[k]=v;document.getElementById('hex-'+k).value=v;applyToDOM();}
+function hHC(k,v){if(/^#[0-9a-fA-F]{6}$/.test(v)){S.colors[k]=v;document.getElementById('picker-'+k).value=v;applyToDOM();}}
+function syncInputs(){COLOR_DEFS.forEach(({key})=>{const v=S.colors[key]||'#000';document.getElementById('picker-'+key).value=v;document.getElementById('hex-'+key).value=v;});}
+function updateTypo(){S.font.family=document.getElementById('fontFamily').value;S.font.titleSize=+document.getElementById('titleSize').value;S.font.bodySize=+document.getElementById('bodySize').value;S.font.labelSize=+document.getElementById('labelSize').value;S.font.titleWeight=+document.getElementById('titleWeight').value;S.font.bodyWeight=+document.getElementById('bodyWeight').value;S.font.labelWeight=+document.getElementById('labelWeight').value;applyToDOM();}
+function updateBgStyle(){const s=document.getElementById('bgStyle').value;if(s==='light'){Object.assign(S.colors,{bg:'#F1F5F9',panel:'#FFFFFF',text:'#0F172A',muted:'#64748B',border:'#E2E8F0'});document.getElementById('bgCustomRow').style.display='none';}else if(s==='dark'){Object.assign(S.colors,{bg:'#1E293B',panel:'#0F172A',text:'#F1F5F9',muted:'#94A3B8',border:'#334155'});document.getElementById('bgCustomRow').style.display='none';}else{document.getElementById('bgCustomRow').style.display='flex';}syncInputs();applyToDOM();}
+function updateBgColor(v){if(/^#[0-9a-fA-F]{6}$/.test(v)){S.colors.bg=v;document.getElementById('bgColorPicker').value=v;document.getElementById('bgHexInput').value=v;applyToDOM();}}
+
+function renderBarChart(){
+  const max=Math.max(...BAR_DATA.map(d=>Math.max(d.v1,d.v2)));
+  document.getElementById('barChart').innerHTML=BAR_DATA.map(d=>`
+    <div class="pbi-bar-group">
+      <span class="pbi-bar-cat">${d.cat}</span>
+      <div class="pbi-bar-track">
+        <div class="pbi-bar-row"><div class="pbi-bar" style="width:${(d.v1/max*100).toFixed(1)}%;background:var(--c1)"></div><span class="pbi-bar-val">$${d.v1}k</span></div>
+        <div class="pbi-bar-row"><div class="pbi-bar" style="width:${(d.v2/max*100).toFixed(1)}%;background:var(--c2)"></div><span class="pbi-bar-val">$${d.v2}k</span></div>
+      </div>
+    </div>`).join('');
+  document.getElementById('barLegend').innerHTML=`<div class="pbi-legend-item"><div style="width:10px;height:10px;background:var(--c1)"></div><span class="pbi-legend-lbl">Revenue</span></div><div class="pbi-legend-item"><div style="width:10px;height:10px;background:var(--c2)"></div><span class="pbi-legend-lbl">Costs</span></div>`;
+}
+
+function renderLineChart(){
+  const W=260,H=80,pad=6;
+  const all=[...LINE1,...LINE2];const max=Math.max(...all)+20,min=Math.min(...all)-20,range=max-min;
+  const pts=data=>data.map((v,i)=>({x:pad+i*(W-pad*2)/(data.length-1),y:H-pad-((v-min)/range)*(H-pad*2)}));
+  const toD=ps=>ps.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const p1=pts(LINE1),p2=pts(LINE2);
+  document.getElementById('linePath').setAttribute('d',toD(p1));
+  document.getElementById('linePath2').setAttribute('d',toD(p2));
+  document.getElementById('lineArea').setAttribute('d',toD(p1)+` L${p1[p1.length-1].x},${H} L${p1[0].x},${H} Z`);
+  document.getElementById('lineMarkers').innerHTML=p1.filter((_,i)=>i%2===0).map(p=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.5" fill="var(--c1)" stroke="var(--panel)" stroke-width="1.2"/>`).join('');
+  document.getElementById('lineAxisLabels').innerHTML=LMONTHS.map(m=>`<span class="pbi-axis-lbl">${m}</span>`).join('');
+  document.getElementById('lineLegend').innerHTML=`<div class="pbi-legend-item"><div style="width:12px;height:3px;background:var(--c1);border-radius:2px"></div><span class="pbi-legend-lbl">2024</span></div><div class="pbi-legend-item"><div style="width:12px;height:3px;background:var(--c3);border-radius:2px;opacity:.7"></div><span class="pbi-legend-lbl">2023</span></div>`;
+  document.getElementById('linePath').setAttribute('stroke','var(--c1)');
+  document.getElementById('linePath2').setAttribute('stroke','var(--c3)');
+  document.getElementById('lgS1').setAttribute('stop-color',S.colors.c1);
+  document.getElementById('lgS2').setAttribute('stop-color',S.colors.c1);
+  document.getElementById('gl1').setAttribute('stroke',S.colors.border);
+  document.getElementById('gl2').setAttribute('stroke',S.colors.border);
+  document.getElementById('gl3').setAttribute('stroke',S.colors.border);
+}
+
+function renderWaterfall(){
+  const el=document.getElementById('waterfallChart');
+  const chartH=70,maxV=700;
+  let run=0;
+  el.innerHTML=WF.map((d,i)=>{
+    const isTotal=d.t==='total';
+    const h=Math.max(3,Math.abs(d.v)/maxV*chartH);
+    const base=isTotal?0:Math.max(0,run)/maxV*chartH;
+    const clr=isTotal?'var(--c1)':d.v>0?'var(--c4)':'var(--c2)';
+    const vt=(d.v>0&&!isTotal?'+':'')+d.v+'k';
+    if(!isTotal)run+=d.v;
+    const connH=isTotal?0:base;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;height:${chartH+28}px;position:relative">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;width:90%;position:relative">
+        ${!isTotal?`<div style="height:${connH}px"></div>`:''}
+        <div style="height:${h}px;background:${clr};width:100%;border-radius:1px 1px 0 0;min-height:3px"></div>
+        ${i<WF.length-1?`<div style="position:absolute;bottom:${base}px;right:-50%;width:50%;border-top:1px dashed var(--border)"></div>`:''}
+      </div>
+      <div style="font-size:8px;font-family:var(--font-family),sans-serif;font-weight:600;color:${clr};text-align:center;margin-top:2px">${vt}</div>
+      <div style="font-size:7.5px;font-family:var(--font-family),sans-serif;color:var(--muted);text-align:center;line-height:1.2">${d.l}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderGauge(){
+  const val=0.78,target=0.90,arcLen=188.5;
+  document.getElementById('gaugeFill').setAttribute('stroke-dashoffset',(arcLen*(1-val)).toFixed(1));
+  document.getElementById('gaugeFill').setAttribute('stroke',S.colors.c1);
+  document.getElementById('gaugeTrack').setAttribute('stroke',S.colors.border);
+  const angle=a=>{ const rad=(-180+a*180)*Math.PI/180; return {x:(80+44*Math.cos(rad+Math.PI)).toFixed(1),y:(82+44*Math.sin(rad+Math.PI)).toFixed(1)}; };
+  const n=angle(val);
+  document.getElementById('gaugeNeedle').setAttribute('x2',n.x);document.getElementById('gaugeNeedle').setAttribute('y2',n.y);
+  document.getElementById('gaugeNeedle').setAttribute('stroke',S.colors.c2);
+  document.getElementById('gaugeCenter').setAttribute('fill',S.colors.c2);
+  const tAngleRad=(-180+target*180)*Math.PI/180;
+  const tx1=(80+50*Math.cos(tAngleRad+Math.PI)).toFixed(1),ty1=(82+50*Math.sin(tAngleRad+Math.PI)).toFixed(1);
+  const tx2=(80+62*Math.cos(tAngleRad+Math.PI)).toFixed(1),ty2=(82+62*Math.sin(tAngleRad+Math.PI)).toFixed(1);
+  const tl=document.getElementById('gaugeTargetLine');
+  tl.setAttribute('x1',tx1);tl.setAttribute('y1',ty1);tl.setAttribute('x2',tx2);tl.setAttribute('y2',ty2);
+  tl.setAttribute('stroke',S.colors.c5);
+}
+
+function renderMatrix(){
+  const maxQ=Math.max(...MATRIX.slice(0,-1).flatMap(d=>[d.q1,d.q2,d.q3]));
+  document.getElementById('matrixBody').innerHTML=MATRIX.map((d,i)=>{
+    const isT=i===MATRIX.length-1;
+    const vc=d.va>0?'cell-pos':'cell-neg';
+    const vt=(d.va>0?'+':'')+d.va.toFixed(1)+'%';
+    const bar=v=>isT?'':` <div class="heatbar" style="width:${(v/maxQ*34).toFixed(0)}px;background:var(--c1);opacity:.3"></div>`;
+    return `<tr><td style="${isT?'font-weight:700':''}">${d.r}</td><td><span>${d.q1}</span>${bar(d.q1)}</td><td><span>${d.q2}</span>${bar(d.q2)}</td><td><span>${d.q3}</span>${bar(d.q3)}</td><td class="${vc}">${vt}</td></tr>`;
+  }).join('');
+}
+
+function applyToDOM(){
+  const r=document.documentElement.style,c=S.colors,f=S.font;
+  r.setProperty('--c1',c.c1);r.setProperty('--c2',c.c2);r.setProperty('--c3',c.c3);r.setProperty('--c4',c.c4);r.setProperty('--c5',c.c5);
+  r.setProperty('--bg',c.bg);r.setProperty('--panel',c.panel);r.setProperty('--text',c.text);r.setProperty('--muted',c.muted);r.setProperty('--border',c.border);
+  r.setProperty('--font-family',`"${f.family}"`);
+  r.setProperty('--title-size',f.titleSize+'px');r.setProperty('--body-size',f.bodySize+'px');r.setProperty('--label-size',f.labelSize+'px');
+  r.setProperty('--title-weight',f.titleWeight);r.setProperty('--body-weight',f.bodyWeight);r.setProperty('--label-weight',f.labelWeight);
+  renderBarChart();renderLineChart();renderWaterfall();renderGauge();renderMatrix();
+}
+
+function wt(v){return({100:'thin',200:'extralight',300:'light',400:'normal',500:'medium',600:'semibold',700:'bold',800:'extrabold',900:'black'})[v]||'normal';}
+function generateJSON(){
+  const c=S.colors,f=S.font;
+  return {
+    name:"Custom Power BI Theme",
+    dataColors:[c.c1,c.c2,c.c3,c.c4,c.c5,c.c3,c.c4,c.c5],
+    good:c.c4,bad:c.c2,neutral:c.c5,maximum:c.c1,center:c.c3,minimum:c.c2,null:"#808080",
+    background:c.bg,foreground:c.text,tableAccent:c.c1,
+    visualStyles:{
+      "*":{"*":{background:[{color:{solid:{color:c.panel}}}],border:[{show:false}],title:[{fontColor:{solid:{color:c.text}},background:{solid:{color:c.panel}},fontSize:f.titleSize,fontFamily:f.family,fontWeight:wt(f.titleWeight),bold:f.titleWeight>=700,italic:false}],labels:[{color:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family,fontWeight:wt(f.labelWeight)}],dataLabels:[{color:{solid:{color:c.text}},fontSize:f.bodySize,fontFamily:f.family}]}},
+      barChart:{"*":{dataPoint:[{fill:{solid:{color:c.c1}}}],categoryAxis:[{labelColor:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family}],valueAxis:[{labelColor:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family,gridlineColor:{solid:{color:c.border}}}]}},
+      columnChart:{"*":{dataPoint:[{fill:{solid:{color:c.c1}}}],categoryAxis:[{labelColor:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family}],valueAxis:[{labelColor:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family,gridlineColor:{solid:{color:c.border}}}]}},
+      lineChart:{"*":{dataPoint:[{strokeColor:{solid:{color:c.c1}},strokeWidth:2}],categoryAxis:[{labelColor:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family}],valueAxis:[{labelColor:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family,gridlineColor:{solid:{color:c.border}}}]}},
+      waterfallChart:{"*":{sentimentColors:[{increaseFill:{solid:{color:c.c4}},decreaseFill:{solid:{color:c.c2}},totalFill:{solid:{color:c.c1}}}]}},
+      gauge:{"*":{dataLabels:[{color:{solid:{color:c.text}},fontSize:f.bodySize,fontFamily:f.family}],target:[{color:{solid:{color:c.c5}}}],fillAngle:[{fill:{solid:{color:c.c1}}}]}},
+      tableEx:{"*":{header:[{fontColor:{solid:{color:c.text}},backColor:{solid:{color:c.bg}},fontSize:f.labelSize,fontFamily:f.family,fontWeight:wt(f.labelWeight),bold:f.labelWeight>=700}],values:[{fontColorPrimary:{solid:{color:c.text}},backColorPrimary:{solid:{color:c.panel}},fontColorSecondary:{solid:{color:c.text}},backColorSecondary:{solid:{color:c.bg}},fontSize:f.bodySize,fontFamily:f.family}],grid:[{gridColor:{solid:{color:c.border}},outlineColor:{solid:{color:c.border}}}]}},
+      matrix:{"*":{header:[{fontColor:{solid:{color:c.text}},backColor:{solid:{color:c.bg}},fontSize:f.labelSize,fontFamily:f.family,fontWeight:wt(f.labelWeight),bold:f.labelWeight>=700}],values:[{fontColorPrimary:{solid:{color:c.text}},backColorPrimary:{solid:{color:c.panel}},fontSize:f.bodySize,fontFamily:f.family}],grid:[{gridColor:{solid:{color:c.border}}}]}},
+      card:{"*":{labels:[{color:{solid:{color:c.muted}},fontSize:f.labelSize,fontFamily:f.family}],value:[{fontColor:{solid:{color:c.text}},fontSize:f.titleSize,fontFamily:f.family,fontWeight:wt(f.titleWeight),bold:f.titleWeight>=700}]}},
+      slicer:{"*":{selection:[{fontColor:{solid:{color:c.text}},fontSize:f.bodySize,fontFamily:f.family}]}},
+      donutChart:{"*":{dataPoint:[{fill:{solid:{color:c.c1}}},{fill:{solid:{color:c.c2}}},{fill:{solid:{color:c.c3}}},{fill:{solid:{color:c.c4}}},{fill:{solid:{color:c.c5}}}]}},
+      areaChart:{"*":{dataPoint:[{fill:{solid:{color:c.c1}}}]}},
+      pieChart:{"*":{dataPoint:[{fill:{solid:{color:c.c1}}},{fill:{solid:{color:c.c2}}},{fill:{solid:{color:c.c3}}}]}}
+    },
+    page:{background:{color:{solid:{color:c.bg}},transparency:0},outspace:{color:{solid:{color:c.bg}}}},
+    textClasses:{callout:{fontFace:f.family,fontSize:f.titleSize*2,fontWeight:wt(f.titleWeight),color:c.c1},title:{fontFace:f.family,fontSize:f.titleSize,fontWeight:wt(f.titleWeight),color:c.text},header:{fontFace:f.family,fontSize:f.bodySize+2,fontWeight:wt(f.labelWeight),color:c.text},label:{fontFace:f.family,fontSize:f.labelSize,fontWeight:wt(f.bodyWeight),color:c.muted}}
+  };
+}
+
+function showJSON(){document.getElementById('jsonPreview').textContent=JSON.stringify(generateJSON(),null,2);document.getElementById('jsonModal').classList.add('open');}
+function closeModal(){document.getElementById('jsonModal').classList.remove('open');}
+function copyJSON(){navigator.clipboard.writeText(JSON.stringify(generateJSON(),null,2));const b=event.target;b.textContent='✓ Copiado!';setTimeout(()=>b.textContent='📋 Copy',1500);}
+function downloadJSON(){const blob=new Blob([JSON.stringify(generateJSON(),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='powerbi-theme.json';a.click();}
+document.getElementById('jsonModal').addEventListener('click',e=>{if(e.target===document.getElementById('jsonModal'))closeModal();});
+
+buildSidebar();
+applyToDOM();
+</script>
+</body>
+</html>
